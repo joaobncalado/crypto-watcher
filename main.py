@@ -16,6 +16,8 @@ import epdconfig
 
 logging.basicConfig(level=logging.DEBUG)
 
+SLEEP_TIME_BETWEEN_REFRESHES = 900
+
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
     res = requests.get(
         "https://api.binance.com/api/v3/klines", params={"symbol": symbol.upper(), "interval": "1h", "limit": 25})
@@ -133,7 +135,8 @@ def main():
 
         logging.info("Sending image to display...")
         epd.display(epd.getbuffer(img))
-        time.sleep(30)
+        logging.info("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
+        time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
 
 
 try:

@@ -13,6 +13,7 @@ import math
 import logging
 import requests
 import epdconfig
+from pisugar2py import PiSugar2
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -75,6 +76,10 @@ def price_to_str(price: float) -> str:
 
 def main():
 
+    ps = PiSugar2()
+    logging.info("PiSugar2 loaded...")
+    battery_percentage = ps.get_battery_percentage()
+    logging.info("Battery: " + str(int(battery_percentage.value)))
     epd = EPD()
     logging.info("Initiating EPD...")
     epd.init(epd.FULL_UPDATE)
@@ -131,6 +136,8 @@ def main():
         
         #Last update time
         draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"),
+                  font=font_tiny, fill=1)
+        draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", 
                   font=font_tiny, fill=1)
 
         logging.info("Sending image to display...")

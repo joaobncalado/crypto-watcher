@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # TODO: Uncomment the epd_2in13_V2 line and comment the epd_stub one if you want to run it on the display
 # from epd_stub import EPD
 from epd2in13_V2 import EPD
@@ -18,6 +19,7 @@ from pisugar2py import PiSugar2
 logging.basicConfig(level=logging.DEBUG)
 
 SLEEP_TIME_BETWEEN_REFRESHES = 900
+RUN_ONCE = True
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
     res = requests.get(
@@ -88,9 +90,12 @@ def main():
 
     logging.info("Starting...")
     img = Image.new("1", (epd.height, epd.width), 255)
-    font = ImageFont.truetype("OpenSans-Regular.ttf", 20)
-    font_small = ImageFont.truetype("OpenSans-Regular.ttf", 16)
-    font_tiny = ImageFont.truetype("OpenSans-Regular.ttf", 12)
+
+    logging.info("Loading font...")
+    font_path_location = "/home/pi/projects/crypto-watcher/OpenSans-Regular.ttf"
+    font = ImageFont.truetype(font_path_location, 20)
+    font_small = ImageFont.truetype(font_path_location, 16)
+    font_tiny = ImageFont.truetype(font_path_location, 12)
 
     timezone = pytz.timezone("Europe/Lisbon")
     while True:
@@ -142,8 +147,13 @@ def main():
 
         logging.info("Sending image to display...")
         epd.display(epd.getbuffer(img))
-        logging.info("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
-        time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
+        
+        if RUN_ONCE:
+           logging.info("Ran once, exiting...")
+           exit()
+        else:
+           logging.info("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
+           time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
 
 
 try:

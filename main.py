@@ -44,11 +44,11 @@ def fetch_crypto_data(symbol: str) -> Tuple[float, float, List[Tuple[float, ...]
 
 
 def render_candlestick(ohlc: Tuple[float, ...], x: int, y_transformer: Callable[[float], int], draw: ImageDraw):
-    draw.rectangle((x, y_transformer(
-        max(ohlc[0], ohlc[3])), x + 2, y_transformer(min(ohlc[0], ohlc[3]))), fill=1)
-    draw.line(
-        (x + 1, y_transformer(ohlc[1]), x + 1, y_transformer(ohlc[2])), fill=1)
-
+    #empty rectangle to represent negative candle sticks
+    fill_rectangle = 0 if ohlc[3] < ohlc[0] else 1
+    draw.line((x + 1, y_transformer(ohlc[1]), x + 1, y_transformer(ohlc[2])), fill=1)
+    draw.rectangle((x, y_transformer(max(ohlc[0], ohlc[3])), x + 2, y_transformer(min(ohlc[0], ohlc[3]))), fill=fill_rectangle, outline=1)
+    
 
 def render_ohlc_data(xPos: int, ohlc: List[Tuple[float, ...]], draw: ImageDraw):
     X_START = xPos
@@ -79,12 +79,16 @@ def main():
 
     try:
 
-        logging.info("Initializing PiSugar2...")
-        ps = PiSugar2()
-
-        logging.info("Getting battery level...")
-        battery_percentage = ps.get_battery_percentage()
-        logging.info("Battery: " + str(int(battery_percentage.value)) + " %")
+        try:
+            logging.info("Initializing PiSugar2...")
+            ps = PiSugar2()
+            logging.info("Getting battery level...")
+            battery_percentage = ps.get_battery_percentage()
+            logging.info("Battery: " + str(int(battery_percentage.value)) + " %")
+        except IOError as e:
+            logging.info(e)
+            battery_percentage = "N/A"
+            ps = False
 
         logging.info("Initiating EPD...")
         epd = EPD()
@@ -146,10 +150,9 @@ def main():
             render_ohlc_data(138, ohlc, draw)
             
             #Last update time and battery percentage
-            draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"),
-                    font=font_tiny, fill=1)
-            draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", 
-                    font=font_tiny, fill=1)
+            draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=1)
+            if ps:
+                draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", font=font_tiny, fill=1)
 
             #Send image to display
             logging.info("Sending image to display...")

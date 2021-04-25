@@ -130,3 +130,6 @@ dmypy.json
 
 # nohup
 nohup.out
+
+# images
+.png

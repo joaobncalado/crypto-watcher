@@ -1,6 +1,9 @@
 # crypto-watcher
 
-Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper display
+Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper display, also has support for PiSugar2 battery
+
+![snapshot](https://user-images.githubusercontent.com/12883662/115999283-185f7380-a5e3-11eb-9685-bb80fef58d10.jpg)
+
 
 # Hardware
 1. RaspberryPi Zero WH

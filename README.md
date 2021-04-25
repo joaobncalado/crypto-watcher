@@ -12,25 +12,31 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
 
 # Getting started
 1. Install OS
+2. Install Git
+    - sudo apt install git
 2. Install python3
+    - sudo apt install python3
 3. Install pip
+    - sudo apt install python3-distutils
+    - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    - python3 get-pip.py
 4. Clone project
+    - git clone https://github.com/joaobncalado/crypto-watcher.git
 5. Install required pip dependencies:
-    - spidev==3.5
-    - requests==2.21.0
-    - pytz==2021.1
-    - numpy==1.16.2
-    - Pillow==8.2.0
-    - RPi==0.0.1
+    - sudo apt install python3-dev
+    - python3 -m pip install spidev==3.5
+    - python3 -m pip install requests==2.21.0
+    - python3 -m pip install pytz==2021.1
+    - python3 -m pip install numpy==1.16.2
+    - python3 -m pip install Pillow==8.2.0
+    - python3 -m pip install RPi==0.0.1
 
-6. Enable SPI (for display)
+6. Enable SPI (for WaveShare)
     - sudo raspi-config
-    - Interface Options
-    - SPI
-    - Enable
+    - Interface Options > SPI > Enable
     - reboot
 
-7. Enable I2C (for battery)
+7. Enable I2C (for PiSugar2)
     - Same as 6) but select I2C instead of SPI
 
 7. python3 main.py

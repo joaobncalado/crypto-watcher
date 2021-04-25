@@ -22,8 +22,7 @@ SLEEP_TIME_BETWEEN_REFRESHES = 900
 RUN_ONCE = True
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
-    res = requests.get(
-        "https://api.binance.com/api/v3/klines", params={"symbol": symbol.upper(), "interval": "1h", "limit": 25})
+    res = requests.get("https://api.binance.com/api/v3/klines", params={"symbol": symbol.upper(), "interval": "1h", "limit": 25})
     res.raise_for_status()
 
     json_data = json.loads(res.text)
@@ -78,92 +77,98 @@ def price_to_str(price: float) -> str:
 
 def main():
 
-    ps = PiSugar2()
-    logging.info("PiSugar2 loaded...")
-    battery_percentage = ps.get_battery_percentage()
-    logging.info("Battery: " + str(int(battery_percentage.value)))
-    epd = EPD()
-    logging.info("Initiating EPD...")
-    epd.init(epd.FULL_UPDATE)
-    logging.info("Clearing display...")
-    epd.Clear(0xFF)
+    try:
 
-    logging.info("Starting...")
-    img = Image.new("1", (epd.height, epd.width), 255)
+        logging.info("Initializing PiSugar2...")
+        ps = PiSugar2()
 
-    logging.info("Loading font...")
-    font_path_location = "/home/pi/projects/crypto-watcher/OpenSans-Regular.ttf"
-    font = ImageFont.truetype(font_path_location, 20)
-    font_small = ImageFont.truetype(font_path_location, 16)
-    font_tiny = ImageFont.truetype(font_path_location, 12)
+        logging.info("Getting battery level...")
+        battery_percentage = ps.get_battery_percentage()
+        logging.info("Battery: " + str(int(battery_percentage.value)) + " %")
 
-    timezone = pytz.timezone("Europe/Lisbon")
-    while True:
+        logging.info("Initiating EPD...")
+        epd = EPD()
+        epd.init(epd.FULL_UPDATE)
 
-        draw = ImageDraw.Draw(img)
-        draw.rectangle((0, 0, epd.height, epd.width), fill=0)
-        
-        #BTC
-        logging.info("Fetching BTC...")
-        price, diff, ohlc = fetch_crypto_data("btcusdt")
-        
-        draw.text((8, 5), text="BTC {}$".format(
-            price_to_str(price)), font=font, fill=1)
+        logging.info("Clearing display...")
+        epd.Clear(0xFF)
 
-        diff_symbol = ""
-        if diff > 0:
-            diff_symbol = "+"
-        if diff < 0:
-            diff_symbol = "-"
+        logging.info("Starting...")
+        img = Image.new("1", (epd.height, epd.width), 255)
 
-        draw.text((8, 30), text="{}{}$".format(diff_symbol,
-                                               price_to_str(diff)), font=font_small, fill=1)
-        
-        render_ohlc_data(18, ohlc, draw)
-        
-        #ETH
-        logging.info("Fetching ETH...")
-        price, diff, ohlc = fetch_crypto_data("ethusdt")
-        
-        draw.text((130, 5), text="ETH {}$".format(
-            price_to_str(price)), font=font, fill=1)
+        logging.info("Loading font...")
+        font_path_location = "/home/pi/projects/crypto-watcher/OpenSans-Regular.ttf"
+        font = ImageFont.truetype(font_path_location, 20)
+        font_small = ImageFont.truetype(font_path_location, 16)
+        font_tiny = ImageFont.truetype(font_path_location, 12)
 
-        diff_symbol = ""
-        if diff > 0:
-            diff_symbol = "+"
-        if diff < 0:
-            diff_symbol = "-"
+        timezone = pytz.timezone("Europe/Lisbon")
 
-        draw.text((130, 30), text="{}{}$".format(diff_symbol,
-                                               price_to_str(diff)), font=font_small, fill=1)
-        
-        render_ohlc_data(138, ohlc, draw)
-        
-        #Last update time
-        draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"),
-                  font=font_tiny, fill=1)
-        draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", 
-                  font=font_tiny, fill=1)
+        while True:
 
-        logging.info("Sending image to display...")
-        epd.display(epd.getbuffer(img))
-        
-        if RUN_ONCE:
-           logging.info("Ran once, exiting...")
-           exit()
-        else:
-           logging.info("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
-           time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
+            draw = ImageDraw.Draw(img)
+            draw.rectangle((0, 0, epd.height, epd.width), fill=0)
+            
+            #BTC
+            logging.info("Fetching BTC...")
+            price, diff, ohlc = fetch_crypto_data("btcusdt")
+            
+            draw.text((8, 5), text="BTC {}$".format(
+                price_to_str(price)), font=font, fill=1)
 
+            diff_symbol = ""
+            if diff > 0:
+                diff_symbol = "+"
+            if diff < 0:
+                diff_symbol = "-"
 
-try:
-    main()
+            draw.text((8, 30), text="{}{}$".format(diff_symbol,
+                                                price_to_str(diff)), font=font_small, fill=1)
+            
+            render_ohlc_data(18, ohlc, draw)
+            
+            #ETH
+            logging.info("Fetching ETH...")
+            price, diff, ohlc = fetch_crypto_data("ethusdt")
+            
+            draw.text((130, 5), text="ETH {}$".format(
+                price_to_str(price)), font=font, fill=1)
 
+            diff_symbol = ""
+            if diff > 0:
+                diff_symbol = "+"
+            if diff < 0:
+                diff_symbol = "-"
 
-except IOError as e:
-    logging.info(e)
+            draw.text((130, 30), text="{}{}$".format(diff_symbol,
+                                                price_to_str(diff)), font=font_small, fill=1)
+            
+            render_ohlc_data(138, ohlc, draw)
+            
+            #Last update time and battery percentage
+            draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"),
+                    font=font_tiny, fill=1)
+            draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", 
+                    font=font_tiny, fill=1)
+
+            #Send image to display
+            logging.info("Sending image to display...")
+            epd.display(epd.getbuffer(img))
+            
+            if RUN_ONCE:
+                logging.info("Ran once, exiting...")
+                exit()
+            else:
+                logging.info("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
+                time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
     
-except KeyboardInterrupt:    
-    logging.info("ctrl + c:")
-    epdconfig.module_exit()
-    exit()
+    except IOError as e:
+        logging.info(e)
+    
+    except KeyboardInterrupt:    
+        logging.info("ctrl + c:")
+        epdconfig.module_exit()
+        exit()
+
+if __name__ == "__main__":
+    main()

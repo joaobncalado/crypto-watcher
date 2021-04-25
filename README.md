@@ -14,7 +14,8 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
 1. Install OS
 2. Install python3
 3. Install pip
-4. Install required pip packages
+4. Clone project
+5. Install required pip dependencies running setup.py or manually:
     - spidev==3.5
     - requests==2.21.0
     - pytz==2021.1
@@ -22,12 +23,11 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
     - Pillow==8.2.0
     - RPi==0.0.1
 
-5. Enable SPI
+6. Enable SPI
     - sudo raspi-config
     - Interface Options
     - SPI
     - Enable
     - reboot
 
-6. Clone project
 7. python3 main.py

@@ -15,7 +15,7 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
 2. Install python3
 3. Install pip
 4. Clone project
-5. Install required pip dependencies running setup.py or manually:
+5. Install required pip dependencies:
     - spidev==3.5
     - requests==2.21.0
     - pytz==2021.1

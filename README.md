@@ -23,11 +23,14 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
     - Pillow==8.2.0
     - RPi==0.0.1
 
-6. Enable SPI
+6. Enable SPI (for display)
     - sudo raspi-config
     - Interface Options
     - SPI
     - Enable
     - reboot
+
+7. Enable I2C (for battery)
+    - Same as 6) but select I2C instead of SPI
 
 7. python3 main.py

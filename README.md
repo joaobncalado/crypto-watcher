@@ -12,31 +12,30 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
 
 # Getting started
 1. Install OS
-2. Install Git
-    - sudo apt install git
-2. Install python3
-    - sudo apt install python3
-3. Install pip
-    - sudo apt install python3-distutils
-    - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    - python3 get-pip.py
-4. Clone project
-    - git clone https://github.com/joaobncalado/crypto-watcher.git
-5. Install required pip dependencies:
-    - sudo apt install python3-dev
-    - python3 -m pip install spidev==3.5
-    - python3 -m pip install requests==2.21.0
-    - python3 -m pip install pytz==2021.1
-    - python3 -m pip install numpy==1.16.2
-    - python3 -m pip install Pillow==8.2.0
-    - python3 -m pip install RPi==0.0.1
-
-6. Enable SPI (for WaveShare)
+2. Enable SPI (for WaveShare)
     - sudo raspi-config
     - Interface Options > SPI > Enable
     - reboot
 
-7. Enable I2C (for PiSugar2)
-    - Same as 6) but select I2C instead of SPI
-
-7. python3 main.py
+3. Enable I2C (for PiSugar2)
+    - Same as 2) but select I2C instead of SPI
+4. Install Git
+    - sudo apt install git
+5. Install python3
+    - sudo apt install python3
+6. Install pip
+    - sudo apt install python3-distutils
+    - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    - python3 get-pip.py
+7. Clone project
+    - git clone https://github.com/joaobncalado/crypto-watcher.git
+8. Install required pip dependencies:
+    - sudo apt install python3-dev # required for spidev
+    - sudo apt install libjpeg-dev # required for Pillow
+    - python3 -m pip install spidev==3.5
+    - python3 -m pip install requests==2.21.0
+    - python3 -m pip install pytz==2021.1
+    - python3 -m pip install numpy==1.16.2 # this takes a while (1h+ on rpi0)
+    - python3 -m pip install Pillow==8.2.0
+    - python3 -m pip install RPi==0.0.1
+9. python3 main.py

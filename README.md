@@ -32,6 +32,7 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
 8. Install required pip dependencies:
     - sudo apt install python3-dev # required for spidev
     - sudo apt install libjpeg-dev # required for Pillow
+    - sudo apt-get install python-pip
     - python3 -m pip install spidev==3.5
     - python3 -m pip install requests==2.21.0
     - python3 -m pip install pytz==2021.1

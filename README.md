@@ -16,9 +16,9 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
     - sudo raspi-config
     - Interface Options > SPI > Enable
     - reboot
-
 3. Enable I2C (for PiSugar2)
     - Same as 2) but select I2C instead of SPI
+    - sudo apt install i2c-tools
 4. Install Git
     - sudo apt install git
 5. Install python3

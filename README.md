@@ -34,6 +34,7 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
     - sudo apt install libjpeg-dev # required for Pillow
     - sudo apt install python-pip # required for RPi
     - sudo apt install python3-rpi.gpio # required for RPi
+    - sudo apt install libatlas-base-dev # required for numpy
     - sudo pip3 install spidev
     - sudo pip3 install requests
     - sudo pip3 install pytz

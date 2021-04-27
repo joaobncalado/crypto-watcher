@@ -26,7 +26,7 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
 6. Install pip
     - sudo apt install python3-distutils
     - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    - python3 get-pip.py
+    - sudo python3 get-pip.py
 7. Clone project
     - git clone https://github.com/joaobncalado/crypto-watcher.git
 8. Install required pip dependencies:
@@ -34,10 +34,10 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
     - sudo apt install libjpeg-dev # required for Pillow
     - sudo apt install python-pip # required for RPi
     - sudo apt install python3-rpi.gpio # required for RPi
-    - python3 -m pip install spidev==3.5
-    - python3 -m pip install requests==2.21.0
-    - python3 -m pip install pytz==2021.1
-    - python3 -m pip install numpy==1.16.2 # this takes a while (1h+ on rpi0)
-    - python3 -m pip install Pillow==8.2.0
-    - python3 -m pip install RPi==0.0.1
+    - sudo pip3 install spidev
+    - sudo pip3 install requests
+    - sudo pip3 install pytz
+    - sudo pip3 install numpy
+    - sudo pip3 install Pillow
+    - sudo pip3 install RPi
 9. python3 main.py

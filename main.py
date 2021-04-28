@@ -92,7 +92,7 @@ def main():
 
         logging.info("Initiating EPD...")
         epd = EPD()
-        epd.init(epd.FULL_UPDATE)
+        epd.init(epd.PART_UPDATE)
 
         logging.info("Starting...")
         img = Image.new("1", (epd.height, epd.width), 255)
@@ -148,12 +148,12 @@ def main():
             
             #Last update time and battery percentage
             draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=1)
-            if ps:
+            if ps != False:
                 draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", font=font_tiny, fill=1)
 
             #Send image to display
             logging.info("Sending image to display...")
-            epd.display(epd.getbuffer(img))
+            epd.displayPartial(epd.getbuffer(img))
             
             if RUN_ONCE:
                 logging.info("Ran once, exiting...")

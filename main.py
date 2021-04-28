@@ -92,7 +92,9 @@ def main():
 
         logging.info("Initiating EPD...")
         epd = EPD()
-        epd.init(epd.PART_UPDATE)
+        epd.init(epd.FULL_UPDATE)
+        loggin.info("Clearing display...")
+        epd.Clear(0xFF)
 
         logging.info("Starting...")
         img = Image.new("1", (epd.height, epd.width), 255)
@@ -153,6 +155,7 @@ def main():
 
             #Send image to display
             logging.info("Sending image to display...")
+            epd.init(epd.PART_UPDATE)
             epd.displayPartial(epd.getbuffer(img))
             
             if RUN_ONCE:

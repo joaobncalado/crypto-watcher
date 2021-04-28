@@ -94,9 +94,6 @@ def main():
         epd = EPD()
         epd.init(epd.FULL_UPDATE)
 
-        logging.info("Clearing display...")
-        epd.Clear(0xFF)
-
         logging.info("Starting...")
         img = Image.new("1", (epd.height, epd.width), 255)
 

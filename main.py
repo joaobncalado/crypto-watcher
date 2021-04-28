@@ -93,7 +93,7 @@ def main():
         logging.info("Initiating EPD...")
         epd = EPD()
         epd.init(epd.FULL_UPDATE)
-        loggin.info("Clearing display...")
+        logging.info("Clearing display...")
         epd.Clear(0xFF)
 
         logging.info("Starting...")

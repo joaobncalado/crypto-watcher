@@ -85,6 +85,8 @@ def main():
             logging.info("Getting battery level...")
             battery_percentage = ps.get_battery_percentage()
             logging.info("Battery: " + str(int(battery_percentage.value)) + " %")
+            logging.info("Syncing RTC...")
+            ps.set_pi_from_rtc()
         except IOError as e:
             logging.info(e)
             battery_percentage = "N/A"
@@ -151,7 +153,13 @@ def main():
             #Last update time and battery percentage
             draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=1)
             if ps != False:
-                draw.text((130, 106), text = "Battery: " + str(int(battery_percentage.value)) + " %", font=font_tiny, fill=1)
+                # new PiSugar model uses battery_power_plugged & battery_allow_charging to detect real charging status
+                battery_display_text = "Battery: " + str(int(battery_percentage.value)) + " %"
+                if ps.get_battery_led_amount().value == 2:
+                    if self.ps.get_battery_power_plugged().value and self.ps.get_battery_allow_charging().value:
+                        logging.info("Charging...")
+                        battery_display_text = battery_display_text + " CHG"
+                draw.text((130, 106), text = battery_display_text, font=font_tiny, fill=1)
 
             #Send image to display
             logging.info("Sending image to display...")

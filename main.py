@@ -18,8 +18,8 @@ from pisugar2py import PiSugar2
 
 logging.basicConfig(level=logging.DEBUG)
 
-SLEEP_TIME_BETWEEN_REFRESHES = 900
-RUN_ONCE = True
+SLEEP_TIME_BETWEEN_REFRESHES = 30
+RUN_ONCE = False
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
     res = requests.get("https://api.binance.com/api/v3/klines", params={"symbol": symbol.upper(), "interval": "1h", "limit": 25})
@@ -156,7 +156,7 @@ def main():
                 # new PiSugar model uses battery_power_plugged & battery_allow_charging to detect real charging status
                 battery_display_text = "Battery: " + str(int(battery_percentage.value)) + " %"
                 if ps.get_battery_led_amount().value == 2:
-                    if self.ps.get_battery_power_plugged().value and self.ps.get_battery_allow_charging().value:
+                    if ps.get_battery_power_plugged().value and ps.get_battery_allow_charging().value:
                         logging.info("Charging...")
                         battery_display_text = battery_display_text + " CHG"
                 draw.text((130, 106), text = battery_display_text, font=font_tiny, fill=1)

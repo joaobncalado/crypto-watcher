@@ -18,7 +18,7 @@ from pisugar2py import PiSugar2
 
 logging.basicConfig(level=logging.DEBUG)
 
-SLEEP_TIME_BETWEEN_REFRESHES = 30
+SLEEP_TIME_BETWEEN_REFRESHES = 10
 RUN_ONCE = False
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
@@ -165,7 +165,64 @@ def main():
             logging.info("Sending image to display...")
             epd.init(epd.PART_UPDATE)
             epd.displayPartial(epd.getbuffer(img))
-            
+
+            logging.info("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
+            time.sleep(10)
+
+            draw = ImageDraw.Draw(img)
+            draw.rectangle((0, 0, epd.height, epd.width), fill=0)
+            #NANO
+            logging.info("Fetching NANO...")
+            price, diff, ohlc = fetch_crypto_data("nanousdt")
+
+            draw.text((8, 5), text="NANO {}$".format(
+                price_to_str(price)), font=font, fill=1)
+
+            diff_symbol = ""
+            if diff > 0:
+                diff_symbol = "+"
+            if diff < 0:
+                diff_symbol = "-"
+
+            draw.text((8, 30), text="{}{}$".format(diff_symbol,
+                                                price_to_str(diff)), font=font_small, fill=1)
+
+            render_ohlc_data(18, ohlc, draw)
+
+            #BNB
+            logging.info("Fetching BNB...")
+            price, diff, ohlc = fetch_crypto_data("bnbusdt")
+
+            draw.text((130, 5), text="BNB {}$".format(
+                price_to_str(price)), font=font, fill=1)
+
+            diff_symbol = ""
+            if diff > 0:
+                diff_symbol = "+"
+            if diff < 0:
+                diff_symbol = "-"
+
+            draw.text((130, 30), text="{}{}$".format(diff_symbol,
+                                                price_to_str(diff)), font=font_small, fill=1)
+
+            render_ohlc_data(138, ohlc, draw)
+
+            #Last update time and battery percentage
+            draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=1)
+            if ps != False:
+                # new PiSugar model uses battery_power_plugged & battery_allow_charging to detect real charging status
+                battery_display_text = "Battery: " + str(int(battery_percentage.value)) + " %"
+                if ps.get_battery_led_amount().value == 2:
+                    if ps.get_battery_power_plugged().value and ps.get_battery_allow_charging().value:
+                        logging.info("Charging...")
+                        battery_display_text = battery_display_text + " CHG"
+                draw.text((130, 106), text = battery_display_text, font=font_tiny, fill=1)
+
+            #Send image to display
+            logging.info("Sending image to display...")
+            epd.init(epd.PART_UPDATE)
+            epd.displayPartial(epd.getbuffer(img))
+
             if RUN_ONCE:
                 logging.info("Ran once, exiting...")
                 exit()

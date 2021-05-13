@@ -1,6 +1,7 @@
 # crypto-watcher
 
 Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper display, also has support for PiSugar2 battery
+The script will iterate over a given list of cryptos
 
 ![snapshot](https://user-images.githubusercontent.com/12883662/115999283-185f7380-a5e3-11eb-9685-bb80fef58d10.jpg)
 
@@ -43,4 +44,6 @@ Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper 
     - sudo pip3 install numpy
     - sudo pip3 install Pillow
     - sudo pip3 install RPi
-9. python3 main.py
+9. python3 main.py [list of crypto to iterate over]:
+    - $ python3 main.py btc eth
+

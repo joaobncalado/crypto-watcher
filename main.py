@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # TODO: Uncomment the epd_2in13_V2 line and comment the epd_stub one if you want to run it on the display
-from epd_stub import EPD
-# from epd2in13_V2 import EPD
+# from epd_stub import EPD
+from epd2in13_V2 import EPD
 from PIL import Image, ImageDraw, ImageFont
 from pisugar2py import PiSugar2
 from typing import List, Tuple, Dict, Callable
@@ -163,7 +163,7 @@ def main():
                     draw.text((130, 30), text="{diff_symbol}{diff_value}$".format(
                         diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=1)
                     render_ohlc_data(138, ohlc, draw)
-                    if(i == len(argv)):
+                    if(i == len(sys.argv)):
                         # if its the last crypto of the list the script will send the image
                         # to the display and sleep, out of the loop, no need to do it here
                         break

@@ -19,6 +19,8 @@ class EPD(object):
     def display(self, image):
         pass
 
+    def displayPartial(self, image):
+        pass
+
     def getbuffer(self, image):
         image.save("image.png")
-        exit()

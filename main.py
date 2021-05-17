@@ -18,9 +18,9 @@ import epdconfig
 
 logging.basicConfig(level=logging.DEBUG)
 
-SLEEP_TIME_BETWEEN_REFRESHES = 10
+SLEEP_TIME_BETWEEN_REFRESHES = 5
 RUN_ONCE = False
-INVERTED_COLORS = False
+INVERTED_COLORS = True
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
     res = requests.get("https://api.binance.com/api/v3/klines",
@@ -55,26 +55,32 @@ def render_candlestick(ohlc: Tuple[float, ...], x: int, y_transformer: Callable[
         min(ohlc[0], ohlc[3]))), fill=get_color(fill_rectangle), outline=positive_filling)
 
 
-def render_ohlc_data(xPos: int, ohlc: List[Tuple[float, ...]], draw: ImageDraw):
-    X_START = xPos
-    Y_START = 54
-    HEIGHT = 50
+def render_ohlc_data(xPos: int, ohlc: List[Tuple[float, ...]], draw: ImageDraw, font: ImageFont):
+    if ohlc != None:
+        X_START = xPos
+        Y_START = 54
+        HEIGHT = 50
 
-    y_min = min([d[2] for d in ohlc])
-    y_max = max([d[1] for d in ohlc])
+        y_min = min([d[2] for d in ohlc])
+        y_max = max([d[1] for d in ohlc])
 
-    def y_transformer(y: float) -> int:
-        multiplier = HEIGHT / (y_max - y_min)
-        offset = int(multiplier * (y - y_min))
-        return Y_START + HEIGHT - offset
+        def y_transformer(y: float) -> int:
+            multiplier = HEIGHT / (y_max - y_min)
+            offset = int(multiplier * (y - y_min))
+            return Y_START + HEIGHT - offset
 
-    x = X_START + 24 * 4 + 1
-    for candle_data in ohlc[::-1]:
-        x -= 4
-        render_candlestick(candle_data, x, y_transformer, draw)
+        x = X_START + 24 * 4 + 1
+        for candle_data in ohlc[::-1]:
+            x -= 4
+            render_candlestick(candle_data, x, y_transformer, draw)
+    else:
+        draw.text((xPos, 54), text="Error", font=font, fill=get_color(1))
 
 
 def price_to_str(price: float) -> str:
+    if price == 0:
+        return "0"
+
     exp10 = math.floor(math.log10(abs(price)))
     num_decimals = int(min(5, max(0, 3 - exp10)))
     return "%.*f" % (num_decimals, price)
@@ -131,7 +137,13 @@ def main():
 
                 crypto_name = sys.argv[i].upper()
                 logging.info("Fetching " + crypto_name + "...")
-                price, diff, ohlc = fetch_crypto_data(crypto_name + "USDT")
+                try:
+                    price, diff, ohlc = fetch_crypto_data(crypto_name + "USDT")
+                except:
+                    logging.error("Error fetching " + crypto_name + " data...")
+                    price = 0
+                    diff = 0
+                    ohlc = None
 
                 diff_symbol = ""
                 if diff > 0:
@@ -165,7 +177,7 @@ def main():
                         crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
                     draw.text((8, 30), text="{diff_symbol}{diff_value}$".format(
                         diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
-                    render_ohlc_data(18, ohlc, draw)
+                    render_ohlc_data(18, ohlc, draw, font_small)
                 else:
                     # Right side of the display
                     logging.info("Right crypto...")
@@ -173,7 +185,7 @@ def main():
                         crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
                     draw.text((130, 30), text="{diff_symbol}{diff_value}$".format(
                         diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
-                    render_ohlc_data(138, ohlc, draw)
+                    render_ohlc_data(138, ohlc, draw, font_small)
                     if(i == len(sys.argv)):
                         # if its the last crypto of the list the script will send the image
                         # to the display and sleep, out of the loop, no need to do it here

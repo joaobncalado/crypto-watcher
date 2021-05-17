@@ -186,7 +186,7 @@ def main():
                     draw.text((130, 30), text="{diff_symbol}{diff_value}$".format(
                         diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
                     render_ohlc_data(138, ohlc, draw, font_small)
-                    if(i == len(sys.argv)):
+                    if(i == len(sys.argv) - 1):
                         # if its the last crypto of the list the script will send the image
                         # to the display and sleep, out of the loop, no need to do it here
                         break

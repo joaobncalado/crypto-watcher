@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # TODO: Uncomment the epd_2in13_V2 line and comment the epd_stub one if you want to run it on the display
-# from epd_stub import EPD
-from epd2in13_V2 import EPD
+from epd_stub import EPD
+#from epd2in13_V2 import EPD
 from PIL import Image, ImageDraw, ImageFont
 from pisugar2py import PiSugar2
 from typing import List, Tuple, Dict, Callable
@@ -20,6 +20,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 SLEEP_TIME_BETWEEN_REFRESHES = 10
 RUN_ONCE = False
+INVERTED_COLORS = False
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
     res = requests.get("https://api.binance.com/api/v3/klines",
@@ -47,10 +48,11 @@ def fetch_crypto_data(symbol: str) -> Tuple[float, float, List[Tuple[float, ...]
 def render_candlestick(ohlc: Tuple[float, ...], x: int, y_transformer: Callable[[float], int], draw: ImageDraw):
     # empty rectangle to represent negative candle sticks
     fill_rectangle = 0 if ohlc[3] < ohlc[0] else 1
+    positive_filling = get_color(1)
     draw.line((x + 1, y_transformer(ohlc[1]),
-              x + 1, y_transformer(ohlc[2])), fill=1)
+              x + 1, y_transformer(ohlc[2])), fill=positive_filling)
     draw.rectangle((x, y_transformer(max(ohlc[0], ohlc[3])), x + 2, y_transformer(
-        min(ohlc[0], ohlc[3]))), fill=fill_rectangle, outline=1)
+        min(ohlc[0], ohlc[3]))), fill=get_color(fill_rectangle), outline=positive_filling)
 
 
 def render_ohlc_data(xPos: int, ohlc: List[Tuple[float, ...]], draw: ImageDraw):
@@ -77,6 +79,12 @@ def price_to_str(price: float) -> str:
     num_decimals = int(min(5, max(0, 3 - exp10)))
     return "%.*f" % (num_decimals, price)
 
+def get_color(should_fill: int) -> int:
+    if INVERTED_COLORS:
+        fill_color = should_fill
+    else:
+        fill_color = 0 if should_fill == 1 else 1
+    return fill_color
 
 def main():
 
@@ -113,6 +121,9 @@ def main():
 
         timezone = pytz.timezone("Europe/Lisbon")
 
+        positive_filling = get_color(1)
+        negative_filling = get_color(0)
+
         while True:
 
             # Iterate the cryptos provided
@@ -132,11 +143,11 @@ def main():
                 if(i % 2):
                     # Left side of the display
                     draw = ImageDraw.Draw(img)
-                    draw.rectangle((0, 0, epd.height, epd.width), fill=0)
+                    draw.rectangle((0, 0, epd.height, epd.width), fill=negative_filling)
 
                     # Last update time
                     draw.text((6, 106), text=datetime.datetime.now(timezone).strftime(
-                        "%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=1)
+                        "%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=positive_filling)
 
                     # Battery percentage
                     if ps != False:
@@ -148,20 +159,20 @@ def main():
                                 logging.info("Charging...")
                                 battery_display_text = battery_display_text + " CHG"
                         draw.text((130, 106), text=battery_display_text,
-                                font=font_tiny, fill=1)
+                                font=font_tiny, fill=positive_filling)
                     logging.info("Left crypto...")
                     draw.text((8, 5), text="{crypto_name} {value}$".format(
-                        crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=1)
+                        crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
                     draw.text((8, 30), text="{diff_symbol}{diff_value}$".format(
-                        diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=1)
+                        diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
                     render_ohlc_data(18, ohlc, draw)
                 else:
                     # Right side of the display
                     logging.info("Right crypto...")
                     draw.text((130, 5), "{crypto_name} {value}$".format(
-                        crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=1)
+                        crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
                     draw.text((130, 30), text="{diff_symbol}{diff_value}$".format(
-                        diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=1)
+                        diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
                     render_ohlc_data(138, ohlc, draw)
                     if(i == len(sys.argv)):
                         # if its the last crypto of the list the script will send the image

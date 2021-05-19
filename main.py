@@ -148,8 +148,9 @@ def main():
                 diff_symbol = ""
                 if diff > 0:
                     diff_symbol = "+"
-                if diff < 0:
-                    diff_symbol = "-"
+                
+                old_price = price - diff
+                diff_percentage = "%.1f" % (((price - (old_price)) / old_price) * 100)
 
                 # Odds on the left, evens on the right
                 if(i % 2):
@@ -175,16 +176,16 @@ def main():
                     logging.info("Left crypto...")
                     draw.text((8, 5), text="{crypto_name} {value}$".format(
                         crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
-                    draw.text((8, 30), text="{diff_symbol}{diff_value}$".format(
-                        diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
+                    draw.text((8, 30), text="{diff_symbol}{diff_value}$ {diff_symbol}{diff_percentage}%".format(
+                        diff_symbol=diff_symbol, diff_value=price_to_str(diff), diff_percentage=diff_percentage), font=font_small, fill=positive_filling)
                     render_ohlc_data(18, ohlc, draw, font_small)
                 else:
                     # Right side of the display
                     logging.info("Right crypto...")
                     draw.text((130, 5), "{crypto_name} {value}$".format(
                         crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
-                    draw.text((130, 30), text="{diff_symbol}{diff_value}$".format(
-                        diff_symbol=diff_symbol, diff_value=price_to_str(diff)), font=font_small, fill=positive_filling)
+                    draw.text((130, 30), text="{diff_symbol}{diff_value}$ {diff_symbol}{diff_percentage}%".format(
+                        diff_symbol=diff_symbol, diff_value=price_to_str(diff), diff_percentage=diff_percentage), font=font_small, fill=positive_filling)
                     render_ohlc_data(138, ohlc, draw, font_small)
                     if(i == len(sys.argv) - 1):
                         # if its the last crypto of the list the script will send the image

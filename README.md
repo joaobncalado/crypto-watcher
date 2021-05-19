@@ -3,7 +3,7 @@
 Simple script that shows up to two crypto candle bar graphs on a 2.13in e-Paper display, also has support for PiSugar2 battery
 The script will iterate over a given list of cryptos
 
-![snapshot](https://user-images.githubusercontent.com/12883662/115999283-185f7380-a5e3-11eb-9685-bb80fef58d10.jpg)
+![IMG_20210519_235054](https://user-images.githubusercontent.com/12883662/118895158-873b9e00-b8fd-11eb-85e0-d2d9ac01b220.jpg)
 
 
 # Hardware

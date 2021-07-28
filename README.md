@@ -43,7 +43,7 @@ The script will iterate over a given list of cryptos
     - sudo pip3 install pytz
     - sudo pip3 install numpy
     - sudo pip3 install Pillow
-    - sudo pip3 install RPi
+    - sudo pip3 install RPi.GPIO
 9. python3 main.py [list of crypto to iterate over]:
     - $ python3 main.py btc eth
 

@@ -66,3 +66,10 @@ The script will iterate over a given list of cryptos
 10. python3 main.py [list of crypto to iterate over separated by spaces]:
     - $ python3 main.py btc eth
 
+11. (optional) Configuring PiSugar2 commands:
+    - one click: Custom Shell to run the script
+        /home/pi/projects/crypto-watcher/main.py btc eth ada xrp bnb vet nano doge
+    - double click: shutdown
+    - long press: Custom Shell to kill the script
+        ps aux | grep python | grep -v "grep" | awk '{print $2}' | sudo xargs kill -9
+

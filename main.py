@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # TODO: Uncomment the epd_2in13_V2 line and comment the epd_stub one if you want to run it on the display
-from epd_stub import EPD
-#from epd2in13_V2 import EPD
+#from epd_stub import EPD
+from epd2in13_V2 import EPD
 from PIL import Image, ImageDraw, ImageFont
 from pisugar2py import PiSugar2
 from typing import List, Tuple, Dict, Callable
@@ -120,7 +120,7 @@ def main():
         img = Image.new("1", (epd.height, epd.width), 255)
 
         logging.info("Loading font...")
-        font_path_location = "/home/pi/projects/crypto-watcher/OpenSans-Regular.ttf"
+        font_path_location = "OpenSans-Regular.ttf"
         font = ImageFont.truetype(font_path_location, 20)
         font_small = ImageFont.truetype(font_path_location, 16)
         font_tiny = ImageFont.truetype(font_path_location, 12)

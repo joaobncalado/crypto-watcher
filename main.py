@@ -106,7 +106,7 @@ def main():
                 "Battery: " + str(int(battery_percentage.value)) + " %")
             logging.info("Syncing RTC...")
             ps.set_pi_from_rtc()
-        except IOError as e:
+        except:
             logging.info(e)
             ps = False
 

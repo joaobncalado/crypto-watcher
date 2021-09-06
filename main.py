@@ -15,6 +15,7 @@ import math
 import logging
 import requests
 import epdconfig
+import os
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -120,10 +121,13 @@ def main():
         img = Image.new("1", (epd.height, epd.width), 255)
 
         logging.info("Loading font...")
-        font_path_location = "OpenSans-Regular.ttf"
-        font = ImageFont.truetype(font_path_location, 20)
-        font_small = ImageFont.truetype(font_path_location, 16)
-        font_tiny = ImageFont.truetype(font_path_location, 12)
+        font_dir_path = os.path.dirname(__file__)
+        font_file_name = "OpenSans-Regular.ttf"
+        font_absolut_path = os.path.join(font_dir_path, font_file_name)
+        logging.info("font path: " + font_absolut_path)
+        font = ImageFont.truetype(font_absolut_path, 20)
+        font_small = ImageFont.truetype(font_absolut_path, 16)
+        font_tiny = ImageFont.truetype(font_absolut_path, 12)
 
         timezone = pytz.timezone("Europe/Lisbon")
 

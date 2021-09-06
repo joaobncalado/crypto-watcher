@@ -18,7 +18,9 @@ The script will iterate over a given list of cryptos
     - Interface Options > SPI > Enable
     - reboot
 3. Enable I2C (for PiSugar2)
-    - Same as 2) but select I2C instead of SPI
+    - sudo raspi-config
+    - Interface Options > I2C > Enable
+    - reboot
     - sudo apt install i2c-tools
 4. Install Git
     - sudo apt install git
@@ -44,6 +46,6 @@ The script will iterate over a given list of cryptos
     - sudo pip3 install numpy
     - sudo pip3 install Pillow
     - sudo pip3 install RPi.GPIO
-9. python3 main.py [list of crypto to iterate over]:
+9. python3 main.py [list of crypto to iterate over separated by spaces]:
     - $ python3 main.py btc eth
 

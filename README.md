@@ -27,10 +27,13 @@ The script will iterate over a given list of cryptos
     - reboot
     - sudo apt install i2c-tools
 4. Install Git
+    - https://git-scm.com/
     - sudo apt install git
 5. Install python3
+    - https://www.python.org/
     - sudo apt install python3
 6. Install pip
+    - https://pip.pypa.io/en/stable/
     - sudo apt install python3-distutils
     - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
     - sudo python3 get-pip.py
@@ -63,7 +66,7 @@ The script will iterate over a given list of cryptos
             ctrl+X
             Y
 
-10. python3 main.py [list of crypto to iterate over separated by spaces]:
+10. python3 main.py [list of crypto to iterate over separated by spaces, unlimited number of cryptos]:
     - $ python3 main.py btc eth
 
 11. (optional) Configuring PiSugar2 commands:

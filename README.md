@@ -52,7 +52,7 @@ The script will iterate over a given list of cryptos
     - sudo pip3 install numpy
     - sudo pip3 install Pillow
     - sudo pip3 install RPi.GPIO
-8. PiSugar2 Software Installation
+8. (optional) PiSugar2 Software Installation
     - curl http://cdn.pisugar.com/release/Pisugar-power-manager.sh | sudo bash
     - http://<your raspberry ip>:8421
 9. Clone project

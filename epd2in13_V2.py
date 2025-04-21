@@ -212,14 +212,14 @@ class EPD:
         pixels = image_monocolor.load()
         
         if(imwidth == self.width and imheight == self.height):
-            logger.debug("Vertical, imheight: " + imheight + ", imwidth: " + imwidth)
+            logger.debug("Vertical, imheight: %s, imwidth: %s", imheight, imwidth)
             for y in range(imheight):
                 for x in range(imwidth):                    
                     if pixels[x, y] == 0:
                         x = imwidth - x
                         buf[int(x / 8) + y * linewidth] &= ~(0x80 >> (x % 8))
         elif(imwidth == self.height and imheight == self.width):
-            logger.debug("Horizontal, imheight: " + imheight + ", imwidth: " + imwidth)
+            logger.debug("Horizontal, imheight: %s, imwidth: %s", imheight, imwidth)
             for y in range(imheight):
                 for x in range(imwidth):
                     newx = y

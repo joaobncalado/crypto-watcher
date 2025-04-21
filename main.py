@@ -24,8 +24,7 @@ RUN_ONCE = False
 INVERTED_COLORS = True
 
 def fetch_ohlc(symbol: str) -> List[Tuple[float, ...]]:
-    res = requests.get("https://api.binance.com/api/v3/klines",
-                       params={"symbol": symbol.upper(), "interval": "1h", "limit": 25})
+    res = requests.get("https://api.binance.com/api/v3/klines", params={"symbol": symbol.upper(), "interval": "1h", "limit": 25})
     res.raise_for_status()
 
     json_data = json.loads(res.text)
@@ -50,11 +49,8 @@ def render_candlestick(ohlc: Tuple[float, ...], x: int, y_transformer: Callable[
     # empty rectangle to represent negative candle sticks
     fill_rectangle = 0 if ohlc[3] < ohlc[0] else 1
     positive_filling = get_color(1)
-    draw.line((x + 1, y_transformer(ohlc[1]),
-              x + 1, y_transformer(ohlc[2])), fill=positive_filling)
-    draw.rectangle((x, y_transformer(max(ohlc[0], ohlc[3])), x + 2, y_transformer(
-        min(ohlc[0], ohlc[3]))), fill=get_color(fill_rectangle), outline=positive_filling)
-
+    draw.line((x + 1, y_transformer(ohlc[1]), x + 1, y_transformer(ohlc[2])), fill=positive_filling)
+    draw.rectangle((x, y_transformer(max(ohlc[0], ohlc[3])), x + 2, y_transformer(min(ohlc[0], ohlc[3]))), fill=get_color(fill_rectangle), outline=positive_filling)
 
 def render_ohlc_data(xPos: int, ohlc: List[Tuple[float, ...]], draw: ImageDraw, font: ImageFont):
     if ohlc != None:
@@ -96,38 +92,37 @@ def get_color(should_fill: int) -> int:
 def main():
 
     try:
-        logging.info("Running for: " + str(len(sys.argv) - 1) + " cryptocurrencies")
+        logging.debug("Running for: " + str(len(sys.argv) - 1) + " cryptocurrencies")
         if(len(sys.argv) - 1 < 1):
             logging.info("Missing at least one argument, exiting...")
             exit()
 
         try:
-            logging.info("Initializing PiSugar2...")
+            logging.debug("Initializing PiSugar2...")
             ps = PiSugar2()
-            logging.info("Getting battery level...")
+            logging.debug("Getting battery level...")
             battery_percentage = ps.get_battery_percentage()
-            logging.info(
-                "Battery: " + str(int(battery_percentage.value)) + " %")
-            logging.info("Syncing RTC...")
+            logging.debug("Battery: " + str(int(battery_percentage.value)) + " %")
+            logging.debug("Syncing RTC...")
             ps.set_pi_from_rtc()
         except Exception as e:
             logging.error(e)
             ps = False
 
-        logging.info("Initiating EPD...")
+        logging.debug("Initiating EPD...")
         epd = EPD()
         epd.init(epd.FULL_UPDATE)
-        logging.info("Clearing display...")
+        logging.debug("Clearing display...")
         epd.Clear(0xFF)
 
-        logging.info("Starting...")
+        logging.debug("Starting...")
         img = Image.new("1", (epd.height, epd.width), 255)
 
-        logging.info("Loading font...")
+        logging.debug("Loading font...")
         font_dir_path = os.path.dirname(__file__)
         font_file_name = "OpenSans-Regular.ttf"
         font_absolut_path = os.path.join(font_dir_path, font_file_name)
-        logging.info("font path: " + font_absolut_path)
+        logging.debug("font path: " + font_absolut_path)
         font = ImageFont.truetype(font_absolut_path, 20)
         font_small = ImageFont.truetype(font_absolut_path, 16)
         font_tiny = ImageFont.truetype(font_absolut_path, 12)
@@ -167,33 +162,26 @@ def main():
                     draw.rectangle((0, 0, epd.height, epd.width), fill=negative_filling)
 
                     # Last update time
-                    draw.text((6, 106), text=datetime.datetime.now(timezone).strftime(
-                        "%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=positive_filling)
+                    draw.text((6, 106), text=datetime.datetime.now(timezone).strftime("%Y-%m-%d %H:%M:%S"), font=font_tiny, fill=positive_filling)
 
                     # Battery percentage
                     if ps != False:
                         # new PiSugar model uses battery_power_plugged & battery_allow_charging to detect real charging status
-                        battery_display_text = "Battery: " + \
-                            str(int(battery_percentage.value)) + " %"
+                        battery_display_text = "Battery: " + str(int(battery_percentage.value)) + " %"
                         if ps.get_battery_led_amount().value == 2:
                             if ps.get_battery_power_plugged().value and ps.get_battery_allow_charging().value:
-                                logging.info("Charging...")
+                                logging.debug("Charging...")
                                 battery_display_text = battery_display_text + " CHG"
-                        draw.text((130, 106), text=battery_display_text,
-                                font=font_tiny, fill=positive_filling)
-                    logging.info("Left crypto...")
-                    draw.text((8, 5), text="{crypto_name} {value}$".format(
-                        crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
-                    draw.text((8, 30), text="{diff_symbol}{diff_value}$ {diff_symbol}{diff_percentage}%".format(
-                        diff_symbol=diff_symbol, diff_value=price_to_str(diff), diff_percentage=diff_percentage), font=font_small, fill=positive_filling)
+                        draw.text((130, 106), text=battery_display_text, font=font_tiny, fill=positive_filling)
+                    logging.debug("Left crypto...")
+                    draw.text((8, 5), text="{crypto_name} {value}$".format(crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
+                    draw.text((8, 30), text="{diff_symbol}{diff_value}$ {diff_symbol}{diff_percentage}%".format(diff_symbol=diff_symbol, diff_value=price_to_str(diff), diff_percentage=diff_percentage), font=font_small, fill=positive_filling)
                     render_ohlc_data(18, ohlc, draw, font_small)
                 else:
                     # Right side of the display
-                    logging.info("Right crypto...")
-                    draw.text((130, 5), "{crypto_name} {value}$".format(
-                        crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
-                    draw.text((130, 30), text="{diff_symbol}{diff_value}$ {diff_symbol}{diff_percentage}%".format(
-                        diff_symbol=diff_symbol, diff_value=price_to_str(diff), diff_percentage=diff_percentage), font=font_small, fill=positive_filling)
+                    logging.debug("Right crypto...")
+                    draw.text((130, 5), "{crypto_name} {value}$".format(crypto_name=crypto_name, value=price_to_str(price)), font=font, fill=positive_filling)
+                    draw.text((130, 30), text="{diff_symbol}{diff_value}$ {diff_symbol}{diff_percentage}%".format(diff_symbol=diff_symbol, diff_value=price_to_str(diff), diff_percentage=diff_percentage), font=font_small, fill=positive_filling)
                     render_ohlc_data(138, ohlc, draw, font_small)
                     if(i == len(sys.argv) - 1):
                         # if its the last crypto of the list the script will send the image
@@ -201,24 +189,22 @@ def main():
                         break
                     else:
                         # Send image to display and wait SLEEP_TIME_BETWEEN_REFRESHES seconds before continue iterating
-                        logging.info("Sending image to display with PART_UPDATE...")
+                        logging.debug("Sending image to display with PART_UPDATE...")
                         epd.init(epd.PART_UPDATE)
                         epd.displayPartial(epd.getbuffer(img))
-                        logging.info("Sleeping for " +
-                             str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
+                        logging.debug("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
                         time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
             
             # Send image to display
-            logging.info("Sending image to display with PART_UPDATE...")
+            logging.debug("Sending image to display with PART_UPDATE...")
             epd.init(epd.PART_UPDATE)
             epd.displayPartial(epd.getbuffer(img))
 
             if RUN_ONCE:
-                logging.info("Ran once, exiting...")
+                logging.debug("Ran once, exiting...")
                 exit()
             else:
-                logging.info("Sleeping for " +
-                             str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
+                logging.debug("Sleeping for " + str(SLEEP_TIME_BETWEEN_REFRESHES) + " seconds...")
                 time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
 
     except IOError as e:
@@ -235,7 +221,6 @@ def main():
 
     except Exception as e:
         logging.error(e)
-
 
 if __name__ == "__main__":
     main()

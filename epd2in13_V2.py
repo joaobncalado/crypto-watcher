@@ -220,7 +220,9 @@ class EPD:
         elif(imwidth == self.height and imheight == self.width):
             logger.debug("Horizontal")
             for y in range(imheight):
+                logger.debug("in y for")
                 for x in range(imwidth):
+                    logger.debug("in x for")
                     newx = y
                     newy = self.height - x - 1
                     if pixels[x, y] == 0:

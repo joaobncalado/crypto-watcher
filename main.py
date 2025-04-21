@@ -197,7 +197,7 @@ def main():
                         break
                     else:
                         # Send image to display and wait SLEEP_TIME_BETWEEN_REFRESHES seconds before continue iterating
-                        logging.info("Sending image to display...")
+                        logging.info("Sending image to display with PART_UPDATE...")
                         epd.init(epd.PART_UPDATE)
                         epd.displayPartial(epd.getbuffer(img))
                         logging.info("Sleeping for " +
@@ -205,7 +205,7 @@ def main():
                         time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
             
             # Send image to display
-            logging.info("Sending image to display...")
+            logging.info("Sending image to display with PART_UPDATE...")
             epd.init(epd.PART_UPDATE)
             epd.displayPartial(epd.getbuffer(img))
 

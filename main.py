@@ -96,8 +96,11 @@ def get_color(should_fill: int) -> int:
 def main():
 
     try:
-        logging.info("Running for: " + str(len(sys.argv) - 1) +
-                     " cryptocurrencies")
+        logging.info("Running for: " + str(len(sys.argv) - 1) + " cryptocurrencies")
+        if(len(sys.argv) < 1):
+            logging.info("Missing at least one argument, exiting...")
+            exit()
+
         try:
             logging.info("Initializing PiSugar2...")
             ps = PiSugar2()
@@ -130,7 +133,6 @@ def main():
         font_tiny = ImageFont.truetype(font_absolut_path, 12)
 
         timezone = pytz.timezone("Europe/Lisbon")
-        logging.info("timezone set")
         
         positive_filling = get_color(1)
         negative_filling = get_color(0)

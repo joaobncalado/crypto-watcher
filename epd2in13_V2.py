@@ -19,6 +19,7 @@ EPD_HEIGHT      = 250
 logger = logging.getLogger(__name__)
 
 class EPD:
+    logger.debug("Initializing epd2in13_V2")
     def __init__(self):
         self.reset_pin = epdconfig.RST_PIN
         self.dc_pin = epdconfig.DC_PIN

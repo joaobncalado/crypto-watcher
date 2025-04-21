@@ -130,7 +130,8 @@ def main():
         font_tiny = ImageFont.truetype(font_absolut_path, 12)
 
         timezone = pytz.timezone("Europe/Lisbon")
-
+        logging.info("timezone set")
+        
         positive_filling = get_color(1)
         negative_filling = get_color(0)
 

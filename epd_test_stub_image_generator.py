@@ -1,7 +1,10 @@
 import logging
 from PIL import Image, ImageDraw, ImageFont
 
+logger = logging.getLogger(__name__)
+
 class EPD(object):
+    logger.debug("Initializing STUB EPD")
     
     FULL_UPDATE = 0
     PART_UPDATE = 1

@@ -110,8 +110,8 @@ def main():
                 "Battery: " + str(int(battery_percentage.value)) + " %")
             logging.info("Syncing RTC...")
             ps.set_pi_from_rtc()
-        except:
-            logging.info(e)
+        except Exception as e:
+            logging.error(e)
             ps = False
 
         logging.info("Initiating EPD...")
@@ -146,7 +146,8 @@ def main():
                 logging.info("Fetching " + crypto_name + "...")
                 try:
                     price, diff, ohlc = fetch_crypto_data(crypto_name + "USDT")
-                except:
+                except Exception as e:
+                    logging.error(e)
                     logging.error("Error fetching " + crypto_name + " data...")
                     price = 0
                     diff = 0
@@ -221,16 +222,19 @@ def main():
                 time.sleep(SLEEP_TIME_BETWEEN_REFRESHES)
 
     except IOError as e:
-        logging.info(e)
+        logging.error(e)
 
     except KeyboardInterrupt:
-        logging.info("Detected ctrl + c:")
+        logging.warning("Detected ctrl + c:")
         try:
             epdconfig.module_exit()
         except RuntimeError as re:
             logging.error("Error exiting display module:")
             logging.error(re)
         exit()
+
+    except Exception as e:
+        logging.error(e)
 
 
 if __name__ == "__main__":
